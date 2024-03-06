@@ -35,7 +35,6 @@ function avaliar(metadados){
             let stringEntrada = entradas.reduce((acumulador, entrada) => acumulador + entrada.value, "").toLowerCase();
             if(stringEntrada == palavraOculta){
                 let principal = document.querySelector('.conteudo-principal');
-                principal.setAttribute('class', 'texto-finalizacao');
                 principal.innerHTML = `
                     <section class="texto-finalizacao">
                         <h1>Você VENCEU!!</h1>
