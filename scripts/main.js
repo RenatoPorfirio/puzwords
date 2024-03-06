@@ -14,11 +14,12 @@ async function carregarPalavraAleatoria(){
     do{
         palavraAleatoria = await buscarPalavraAleatoria();
     } while(palavraAleatoria.length > 7);
-    return palavraAleatoria;
+    let xml = await fetch('https://api.dicionario-aberto.net/word/'+palavraAleatoria).then(response => response.json()).then(data => data[0].xml);
+    return {palavraAleatoria, xml};
 }
 
 function avaliar(metadados){
-    let {entradas, tabelaTentativas, palavraAleatoria, tentativas, textoTentativas} = metadados;
+    let {entradas, tabelaTentativas, palavraAleatoria, tentativas, textoTentativas, xml} = metadados;
     var palavraOculta = palavraAleatoria.normalize('NFD').replace(/[^a-zA-Z\s]/g, "").toLowerCase();
     var tabelaCaracteres = {
         a: 0, b: 0, c: 0, d: 0, e: 0, f: 0, g: 0, h: 0, i: 0, j: 0, k: 0, l: 0, m: 0,
@@ -33,51 +34,68 @@ function avaliar(metadados){
         if(entradas.every((entrada) => entrada.value)){
             let stringEntrada = entradas.reduce((acumulador, entrada) => acumulador + entrada.value, "").toLowerCase();
             if(stringEntrada == palavraOculta){
-                alert("Parabéns, você acertou!");
-                window.location.reload();
+                let principal = document.querySelector('.conteudo-principal');
+                principal.setAttribute('class', 'texto-finalizacao');
+                principal.innerHTML = `
+                    <h1>Você VENCEU!!</h1>
+                    <h2>A palavra oculta era:</h2>
+                    <h3 class="titulo-texto-finalizacao">${palavraAleatoria}</h3>
+                `;
             }
             else{
                 tentativas--;
                 if(!tentativas){
-                    alert(`Você perdeu!!\nA palvra oculta era: ${palavraAleatoria}`);
-                    window.location.reload();
+                    let principal = document.querySelector('.conteudo-principal');
+                    principal.innerHTML = `
+                        <section class="texto-finalizacao">
+                            <h1>Você perdeu :(</h1>
+                            <h2>A palavra oculta era:</h2>
+                            <h3 class="titulo-texto-finalizacao">${palavraAleatoria}</h3>
+                        </section>
+                        <section class="texto-finalizacao">
+                            <h3 style="margin-bottom:20px;font-size:50px;">SIGNIFICADO</h3>
+                            <div style="color:#A67E62;font-size:20px;background-color:white;padding:10px;border-radius:20px">${xml}</div>   
+                        </section>
+                    `;
                 }
-                let tabelaChecagem = {...tabelaCaracteres};
-                let linha = document.createElement('tr');
-                linha.setAttribute('class', 'linha-tabela');
-                for(let i = 0; i < stringEntrada.length; i++){
-                    let caractere = stringEntrada[i];
-                    let item = document.createElement('td');
-                    item.innerHTML = stringEntrada[i];
-                    if(caractere == palavraOculta[i]){
-                        tabelaChecagem[caractere]--;
-                        item.setAttribute('class', 'item-tabela posicao-correta');
-                    }
-                    else if(!tabelaChecagem[caractere]){
-                        item.setAttribute('class', 'item-tabela letra-incorreta');
-                    }
-                    linha.appendChild(item);
-                }
-                for(let i = 0; i < linha.children.length; i++){
-                    let item = linha.children[i];
-                    if(!item.classList.length){
-                        if(tabelaChecagem[item.innerText]){
-                            tabelaChecagem[item.innerText]--;
-                            item.setAttribute('class', 'item-tabela posicao-incorreta');
+                else{
+                    let tabelaChecagem = {...tabelaCaracteres};
+                    let linha = document.createElement('tr');
+                    linha.setAttribute('class', 'linha-tabela');
+                    for(let i = 0; i < stringEntrada.length; i++){
+                        let caractere = stringEntrada[i];
+                        let item = document.createElement('td');
+                        item.innerHTML = stringEntrada[i];
+                        if(caractere == palavraOculta[i]){
+                            tabelaChecagem[caractere]--;
+                            item.setAttribute('class', 'item-tabela posicao-correta');
                         }
-                        else{
+                        else if(!tabelaChecagem[caractere]){
                             item.setAttribute('class', 'item-tabela letra-incorreta');
                         }
+                        linha.appendChild(item);
                     }
+                    for(let i = 0; i < linha.children.length; i++){
+                        let item = linha.children[i];
+                        if(!item.classList.length){
+                            if(tabelaChecagem[item.innerText]){
+                                tabelaChecagem[item.innerText]--;
+                                item.setAttribute('class', 'item-tabela posicao-incorreta');
+                            }
+                            else{
+                                item.setAttribute('class', 'item-tabela letra-incorreta');
+                            }
+                        }
+                    }
+                    tabelaTentativas.appendChild(linha);
+        
+                    entradas = entradas.map((entrada) => {
+                        entrada.value = "";
+                        return entrada;
+                    });
+                    metadados.tentativas = tentativas;
+                    textoTentativas.innerText = 'TENTATIVAS RESTANTES: ' + tentativas;
                 }
-                tabelaTentativas.appendChild(linha);
-    
-                entradas = entradas.map((entrada) => {
-                    entrada.value = "";
-                    return entrada;
-                });
-                metadados.tentativas = tentativas;
-                textoTentativas.innerText = 'TENTATIVAS RESTANTES: ' + tentativas;
             }
         }
         else{
@@ -88,7 +106,7 @@ function avaliar(metadados){
 }
 
 async function iniciarJogo(){
-    let palavraAleatoria = await carregarPalavraAleatoria();
+    let {palavraAleatoria, xml} = await carregarPalavraAleatoria();
     let entradas = [];
     let botaoReiniciar = document.querySelector(".botao-circulo-header");
     let botaoAvaliar = document.getElementById("botao-avaliar");
@@ -101,6 +119,7 @@ async function iniciarJogo(){
         palavraAleatoria: palavraAleatoria,
         tentativas: 10,
         textoTentativas: textoTentativas,
+        xml: xml,
     };
 
     textoLetras.innerText += palavraAleatoria.length + ' LETRAS';
@@ -111,6 +130,12 @@ async function iniciarJogo(){
     botaoReiniciar.onclick = () => {
         window.location.reload();
     }
+
+    botaoAvaliar.addEventListener('keyup', (e) => {
+        if(e.key === 'Backspace' || e.key === 'ArrowLeft'){
+            entradas[palavraAleatoria.length-1].focus();
+        }
+    });
 
     botaoAvaliar.onclick = avaliar(metadados);
 
@@ -123,18 +148,38 @@ async function iniciarJogo(){
     }
     for(let i = 0; i < palavraAleatoria.length; i++){
         entradas[i].addEventListener('input', (e) => {
-            if(e.inputType === 'deleteContentBackward' && i != 0){
-                entradas[i-1].focus();
-            }
-            else if(e.inputType === 'insertText'){
-                if(entradas[i].value.length > 1){
-                    entradas[i].value = entradas[i].value[0];
+            if(e.inputType === 'insertText'){
+                let ch = e.data.toLowerCase();
+                if(entradas[i].value.length > 1 && (('a' <= ch && ch <= 'z') || ch === '-')){
+                    entradas[i].value = ch;
+                    try{
+                        entradas[i+1].focus();
+                    }
+                    catch {
+                        botaoAvaliar.focus();
+                    }
+                }
+                else if((ch < 'a' || 'z' < ch) && ch != '-'){
+                    entradas[i].value = "";
                 }
                 else if(i == palavraAleatoria.length - 1){
                     botaoAvaliar.focus();
                 }
                 else{
                     entradas[i+1].focus();
+                }
+            }
+        });
+        entradas[i].addEventListener('keyup', (e) => {
+            if((e.key === 'Backspace' || e.key === 'ArrowLeft') && i != 0){
+                entradas[i-1].focus();
+            }
+            else if(e.key === 'ArrowRight'){
+                try{
+                    entradas[i+1].focus();
+                }
+                catch{
+                    botaoAvaliar.focus();
                 }
             }
         });
