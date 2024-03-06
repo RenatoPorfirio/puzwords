@@ -37,9 +37,15 @@ function avaliar(metadados){
                 let principal = document.querySelector('.conteudo-principal');
                 principal.setAttribute('class', 'texto-finalizacao');
                 principal.innerHTML = `
-                    <h1>Você VENCEU!!</h1>
-                    <h2>A palavra oculta era:</h2>
-                    <h3 class="titulo-texto-finalizacao">${palavraAleatoria}</h3>
+                    <section class="texto-finalizacao">
+                        <h1>Você VENCEU!!</h1>
+                        <h2>A palavra oculta era:</h2>
+                        <h3 class="titulo-texto-finalizacao">${palavraAleatoria}</h3>
+                    </section>
+                    <section class="texto-finalizacao">
+                        <h3 style="margin-bottom:20px;font-size:50px;">SIGNIFICADO</h3>
+                        <div style="color:#A67E62;font-size:20px;background-color:white;padding:10px;border-radius:20px">${xml}</div>   
+                    </section>
                 `;
             }
             else{
