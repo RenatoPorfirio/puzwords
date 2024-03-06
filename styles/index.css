@@ -63,16 +63,21 @@ main {
     margin-top: 30px;
 }
 
-.botao-duvidas {
-    width: 200px;
-    height: 100px;
-    margin-right: 20px;
+.sobre {
+    font-family: 'Luckiest Guy', cursive;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #6F6F6F;
+    width: 180px;
+    height: 80px;
     margin-top: 10px;
 }
 
-.duvidas {
-    width: 200px;
-    height: 100px;
+.sobre:hover {
+    color: #CDA221;
+    cursor: pointer;
 }
 
 .conteudo-principal {
