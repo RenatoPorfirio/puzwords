@@ -1,24 +1,12 @@
+//Variáveis globais
+let cola = "";
+//
 async function buscarPalavraAleatoria(){
     const resposta = await fetch('https://api.dicionario-aberto.net/random')
         .then(resposta => resposta.json())
         .then(dados => dados.word)
         .catch(erro => {console.log(erro); return "ERRO!!";});
     return resposta;
-}
-
-var cola;
-var entradas = [];
-
-let botaoReiniciar = document.querySelector(".botao-circulo-header");
-
-let botaoAvaliar = document.getElementById("botao-avaliar");
-
-let camposEntrada = document.getElementById("campos-entrada");
-
-let tabelaTentativas = document.getElementById("tabela-tentativas");
-
-botaoReiniciar.onclick = () => {
-    window.location.reload();
 }
 
 async function carregarPalavraAleatoria(){
@@ -29,37 +17,58 @@ async function carregarPalavraAleatoria(){
     return palavraAleatoria;
 }
 
-async function iniciarJogo(){
-    let palavraAleatoria = await carregarPalavraAleatoria();
+function avaliar(metadados){
+    let {entradas, tabelaTentativas, palavraAleatoria, tentativas, textoTentativas} = metadados;
+    var palavraOculta = palavraAleatoria.normalize('NFD').replace(/[^a-zA-Z\s]/g, "").toLowerCase();
+    var tabelaCaracteres = {
+        a: 0, b: 0, c: 0, d: 0, e: 0, f: 0, g: 0, h: 0, i: 0, j: 0, k: 0, l: 0, m: 0,
+        n: 0, o: 0, p: 0, q: 0, r: 0, s: 0, t: 0, u: 0, v: 0, w: 0, x: 0, y: 0, z: 0,
+    };
 
-    cola = palavraAleatoria;
+    for(ch of palavraOculta){
+        tabelaCaracteres[ch]++;
+    }
 
-    botaoAvaliar.onclick = () => {
+    return () => {
         if(entradas.every((entrada) => entrada.value)){
-            let str = entradas.reduce((acumulador, entrada) => acumulador + entrada.value, "");
-            let palavraOculta = palavraAleatoria.normalize('NFD').replace(/[^a-zA-Z\s]/g, "");
-            //let existencia = await fetch('https://api.dicionario-aberto.net/word'+palavraOculta);
-            // if(existencia.length === 0){
-            //     alert('Digite uma palavra válida!!');
-            // }
-            //else
-             if(str.toLowerCase() == palavraOculta){
+            let stringEntrada = entradas.reduce((acumulador, entrada) => acumulador + entrada.value, "").toLowerCase();
+            if(stringEntrada == palavraOculta){
                 alert("Parabéns, você acertou!");
                 window.location.reload();
             }
             else{
+                tentativas--;
+                if(!tentativas){
+                    alert(`Você perdeu!!\nA palvra oculta era: ${palavraAleatoria}`);
+                    window.location.reload();
+                }
+                let tabelaChecagem = {...tabelaCaracteres};
                 let linha = document.createElement('tr');
                 linha.setAttribute('class', 'linha-tabela');
-                for(let i = 0; i < entradas.length; i++){
+                for(let i = 0; i < stringEntrada.length; i++){
+                    let caractere = stringEntrada[i];
                     let item = document.createElement('td');
-                    item.innerHTML = entradas[i].value;
-                    if(entradas[i].value == palavraOculta[i]){
-                        item.setAttribute('class', 'item-tabela correto');
+                    item.innerHTML = stringEntrada[i];
+                    if(caractere == palavraOculta[i]){
+                        tabelaChecagem[caractere]--;
+                        item.setAttribute('class', 'item-tabela posicao-correta');
                     }
-                    else{
-                        item.setAttribute('class', 'item-tabela errado');
+                    else if(!tabelaChecagem[caractere]){
+                        item.setAttribute('class', 'item-tabela letra-incorreta');
                     }
                     linha.appendChild(item);
+                }
+                for(let i = 0; i < linha.children.length; i++){
+                    let item = linha.children[i];
+                    if(!item.classList.length){
+                        if(tabelaChecagem[item.innerText]){
+                            tabelaChecagem[item.innerText]--;
+                            item.setAttribute('class', 'item-tabela posicao-incorreta');
+                        }
+                        else{
+                            item.setAttribute('class', 'item-tabela letra-incorreta');
+                        }
+                    }
                 }
                 tabelaTentativas.appendChild(linha);
     
@@ -67,6 +76,8 @@ async function iniciarJogo(){
                     entrada.value = "";
                     return entrada;
                 });
+                metadados.tentativas = tentativas;
+                textoTentativas.innerText = 'TENTATIVAS RESTANTES: ' + tentativas;
             }
         }
         else{
@@ -74,10 +85,34 @@ async function iniciarJogo(){
         }
         entradas[0].focus();
     }
+}
 
-    const [letras, tentativas] = document.getElementsByClassName('titulo-conteudo-principal');
-    letras.innerText += palavraAleatoria.length + ' LETRAS';
-    tentativas.innerText += ' ' + 10;
+async function iniciarJogo(){
+    let palavraAleatoria = await carregarPalavraAleatoria();
+    let entradas = [];
+    let botaoReiniciar = document.querySelector(".botao-circulo-header");
+    let botaoAvaliar = document.getElementById("botao-avaliar");
+    let camposEntrada = document.getElementById("campos-entrada");
+    let tabelaTentativas = document.getElementById("tabela-tentativas");
+    const [textoLetras, textoTentativas] = document.getElementsByClassName('titulo-conteudo-principal');
+    let metadados = {
+        entradas: entradas,
+        tabelaTentativas: tabelaTentativas,
+        palavraAleatoria: palavraAleatoria,
+        tentativas: 10,
+        textoTentativas: textoTentativas,
+    };
+
+    textoLetras.innerText += palavraAleatoria.length + ' LETRAS';
+    textoTentativas.innerText += ' ' + 10;
+
+    cola = palavraAleatoria;
+
+    botaoReiniciar.onclick = () => {
+        window.location.reload();
+    }
+
+    botaoAvaliar.onclick = avaliar(metadados);
 
     for(let i = 0; i < palavraAleatoria.length; i++){
         let entrada = document.createElement('input');
