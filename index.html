@@ -8,10 +8,31 @@
         <title>PUZWORDS - Página Inicial</title>
     </head>
     <body>
-        <main>
+        <header>
             <h1>SOBRE</h1>
-            <p></p>
-            <a href="./jogo.html">JOGAR</a>
+            <img id="logo" src="./images/logo.png" alt="logo">
+        </header>
+        <main>
+            <section id="descricao">
+                <div class="secao-descricao">
+                    <p><span class="destaque-texto">PUZWORDS</span> é um jogo simples de advinhar palavras!</p>
+                    <p>Seu objetivo é desvendar uma palavra oculta aleatória do dicionário, mas não se preocupe! As palavras terão 7 letras no máximo.</p>
+                </div>
+                <div class="secao-descricao">
+                    <p>Ao avaliar uma palavra digitada, haverão as seguintes possibiliades de cores para cada letra:</p>
+                    <ul id="lista-descricao">
+                        <li><span id="destaque-verde">VERDE:</span> Indica que a letra existe no texto e está na posição correta</li>
+                        <li><span id="destaque-amarelo">AMARELO:</span> Indica que a letra existe no texto e está na posição incorreta</li>
+                        <li><span id="destaque-vermelho">VERMELHO:</span> Indica que a letra não existe no texto</li>
+                    </ul>
+                </div>
+            </section>
+            <a id="botao-jogar" href="./jogo.html">JOGAR</a>
         </main>
+        <footer>
+            <ul>
+                <!-- <li>a</li> -->
+            </ul>
+        </footer>
     </body>
 </html>

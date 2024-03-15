@@ -84,11 +84,6 @@ main {
     height: 150px;
 }
 
-.sobre:hover {
-    color: #CDA221;
-    cursor: pointer;
-}
-
 .conteudo-principal {
     display: flex;
     align-items: top;
