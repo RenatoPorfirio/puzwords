@@ -7,8 +7,10 @@
 }
 
 body {
-    width: 100vw;
-    height: 100vh;
+    min-width: 100vw;
+    min-height: 100vh;
+    width:1280px;
+    height:920px;
     background-color: #EDECE8;
     font-family: 'Luckiest Guy', cursive;
 }
