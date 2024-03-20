@@ -64,6 +64,7 @@ function avaliar(metadados){
                     `;
                 }
                 else{
+                    let pilha_amarelos = [];
                     let tabelaChecagem = {...tabelaCaracteres};
                     let linha = document.createElement('tr');
                     linha.setAttribute('class', 'linha-tabela');
@@ -72,26 +73,25 @@ function avaliar(metadados){
                         let item = document.createElement('td');
                         item.innerHTML = stringEntrada[i];
                         if(caractere == palavraOculta[i]){
-                            tabelaChecagem[caractere]--;
+                            if(tabelaChecagem[caractere]){
+                                tabelaChecagem[caractere]--;
+                            }
+                            else{
+                                pilha_amarelos.pop().setAttribute('class', 'item-tabela letra-incorreta');
+                            }
                             item.setAttribute('class', 'item-tabela posicao-correta');
                         }
-                        else if(!tabelaChecagem[caractere]){
+                        else if(tabelaChecagem[caractere]){
+                            tabelaChecagem[caractere]--;
+                            pilha_amarelos.push(item);
+                            item.setAttribute('class', 'item-tabela posicao-incorreta');
+                        }
+                        else{
                             item.setAttribute('class', 'item-tabela letra-incorreta');
                         }
                         linha.appendChild(item);
                     }
-                    for(let i = 0; i < linha.children.length; i++){
-                        let item = linha.children[i];
-                        if(!item.classList.length){
-                            if(tabelaChecagem[item.innerText]){
-                                tabelaChecagem[item.innerText]--;
-                                item.setAttribute('class', 'item-tabela posicao-incorreta');
-                            }
-                            else{
-                                item.setAttribute('class', 'item-tabela letra-incorreta');
-                            }
-                        }
-                    }
+
                     tabelaTentativas.appendChild(linha);
         
                     entradas = entradas.map((entrada) => {
