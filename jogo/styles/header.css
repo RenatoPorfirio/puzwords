@@ -1,0 +1,46 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    box-sizing: content-box;
+    width: 100%;
+    height: 220px;
+    //overflow: hidden;
+}
+
+.botao-circulo-header {
+    width: 230px;
+    height: 230px;
+}
+
+.botao-circulo-header:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+.circulo-header {
+    width: 230px;
+    height: 230px;
+}
+
+.titulo {
+    font-family: 'Libre Baskerville', serif;
+    color: #A67E62;
+    font-size: 100px;
+    margin-top: 30px;
+}
+
+.conteiner-logo {
+    font-family: 'Luckiest Guy', cursive;
+    display: flex;
+    align-items: center;
+    font-size: 28px;
+    color: #6F6F6F;
+    width: 180px;
+    height: 150px;
+    margin-top: 10px;
+}
+
+.conteiner-logo img {
+    width: 150px;
+    height: 150px;
+}
