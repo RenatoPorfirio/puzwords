@@ -19,12 +19,18 @@ async function carregarPalavraAleatoria(){
 }
 
 function avaliar(metadados){
+    function AuxiliarContagem(contagem){
+        this.contagem = contagem;
+        this.pilha = [];
+        return this;
+    }
     let {entradas, tabelaTentativas, palavraAleatoria, tentativas, textoTentativas, xml} = metadados;
     var palavraOculta = palavraAleatoria.normalize('NFD').replace(/[^a-zA-Z\s]/g, "").toLowerCase();
-    var tabelaCaracteres = {
-        a: 0, b: 0, c: 0, d: 0, e: 0, f: 0, g: 0, h: 0, i: 0, j: 0, k: 0, l: 0, m: 0,
-        n: 0, o: 0, p: 0, q: 0, r: 0, s: 0, t: 0, u: 0, v: 0, w: 0, x: 0, y: 0, z: 0,
-    };
+    const caracteres = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+    var tabelaCaracteres = {};
+    for(ch of caracteres){
+        tabelaCaracteres[ch] = 0;
+    }
 
     for(ch of palavraOculta){
         tabelaCaracteres[ch]++;
@@ -64,26 +70,29 @@ function avaliar(metadados){
                     `;
                 }
                 else{
-                    let pilha_amarelos = [];
-                    let tabelaChecagem = {...tabelaCaracteres};
+                    let tabelaChecagem = {};
+                    for(ch of caracteres){
+                        tabelaChecagem[ch] = new AuxiliarContagem(tabelaCaracteres[ch]);
+                    }
                     let linha = document.createElement('tr');
                     linha.setAttribute('class', 'linha-tabela');
                     for(let i = 0; i < stringEntrada.length; i++){
                         let caractere = stringEntrada[i];
+                        let auxiliarContagem = tabelaChecagem[caractere];
                         let item = document.createElement('td');
                         item.innerHTML = stringEntrada[i];
                         if(caractere == palavraOculta[i]){
-                            if(tabelaChecagem[caractere]){
-                                tabelaChecagem[caractere]--;
+                            if(auxiliarContagem.contagem){
+                                auxiliarContagem.contagem--;
                             }
                             else{
-                                pilha_amarelos.pop().setAttribute('class', 'item-tabela letra-incorreta');
+                                auxiliarContagem.pilha.pop().setAttribute('class', 'item-tabela letra-incorreta');
                             }
                             item.setAttribute('class', 'item-tabela posicao-correta');
                         }
-                        else if(tabelaChecagem[caractere]){
-                            tabelaChecagem[caractere]--;
-                            pilha_amarelos.push(item);
+                        else if(auxiliarContagem.contagem){
+                            auxiliarContagem.contagem--;
+                            auxiliarContagem.pilha.push(item);
                             item.setAttribute('class', 'item-tabela posicao-incorreta');
                         }
                         else{

@@ -1,1 +1,4 @@
-@import url('./styles/index.css');
+@import url('./styles/presets.css');
+@import url('./styles/header.css');
+@import url('./styles/main.css');
+@import url('./styles/footer.css');

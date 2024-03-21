@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Luckiest+Guy&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    background-color: transparent;
+    border: none;
+}
+
+body {
+    background-color: #EDECE8;
+    font-family: 'Luckiest Guy', cursive;
+    box-sizing: border-box;
+    min-height: 768px;
+    min-width: 1024px;
+    height: 100vh;
+    width: 100vw;
+    background-image: url('/images/W background.png');
+    background-repeat: no-repeat;
+    background-size: 50% 50%;
+    background-position-x: 0%;
+    background-position-y: 100%;
+}
+
+.imagem-fundo {
+    opacity: .5;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60%;
+    height: 65%;
+}
