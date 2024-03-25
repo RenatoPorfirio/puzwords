@@ -1,17 +1,19 @@
 header {
-    height: 10vh;
-    min-height: 77px;
+    height: 150px;
     min-width: 1024px;
+    width: 100%;
     font-size: 30px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
 }
 
 #logo {
-    position: absolute;
-    top: 2%;
-    right: 2%;
+    position: relative;
     width: 180px;
     height: 150px;
+}
+
+header .caixa-vazia {
+    width: 180px;
 }
