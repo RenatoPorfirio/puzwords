@@ -1,11 +1,11 @@
 header {
     height: 150px;
     min-width: 1024px;
-    width: 100%;
+    width: 90%;
     font-size: 30px;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 #logo {
