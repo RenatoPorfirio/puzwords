@@ -17,6 +17,7 @@ body {
     width:100vw;
     height:100vh;
     max-width: 4098px;
+    margin: auto;
     display: flex;
     flex-direction: column;
     background-image: url('/images/W background.png');
