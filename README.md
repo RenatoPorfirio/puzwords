@@ -1,5 +1,10 @@
 # PUZWORDS
 
+Desenhado e desenvolvido por: [Renato Porfirio](https://github.com/RenatoPorfirio)  
+Disponível em: https://puzwords.vercel.app/
+
+![alt text](<puzwords - tela inicial.png>)  
+![alt text](<puzwords - jogo.png>)
 ---
 
 ## Sobre o Jogo  
