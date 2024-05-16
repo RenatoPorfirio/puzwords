@@ -20,7 +20,7 @@ body {
     margin: auto;
     display: flex;
     flex-direction: column;
-    background-image: url('/images/W background.png');
+    background-image: url('/global/images/W background.png');
     background-repeat: no-repeat;
     background-size: 50% 50%;
     background-position-x: 0%;
